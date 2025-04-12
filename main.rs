@@ -1,4 +1,4 @@
-// src/main.rs
+
 use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::thread;
@@ -8,7 +8,7 @@ use serde::Deserialize;
 use std::error::Error;
 use std::fmt;
 
-// Define custom error type for better error handling
+
 #[derive(Debug)]
 enum PriceError {
     NetworkError(String),
@@ -28,29 +28,29 @@ impl fmt::Display for PriceError {
 
 impl Error for PriceError {}
 
-// Define the Pricing trait
+
 trait Pricing {
     fn fetch_price(&self) -> Result<f64, PriceError>;
     fn save_to_file(&self, price: f64) -> Result<(), PriceError>;
     fn name(&self) -> &str;
 }
 
-// Bitcoin struct
+
 struct Bitcoin {
     filename: String,
 }
 
-// Ethereum struct
+
 struct Ethereum {
     filename: String,
 }
 
-// SP500 struct
+
 struct SP500 {
     filename: String,
 }
 
-// Response structs for API data
+
 #[derive(Deserialize)]
 struct CoinGeckoResponse {
     #[serde(rename = "usd")]
@@ -69,7 +69,7 @@ struct GlobalQuote {
     price: String,
 }
 
-// Implementation of Pricing trait for Bitcoin
+
 impl Pricing for Bitcoin {
     fn fetch_price(&self) -> Result<f64, PriceError> {
         let url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd";
@@ -83,7 +83,7 @@ impl Pricing for Bitcoin {
         let json: serde_json::Value = serde_json::from_str(&response_str)
             .map_err(|e| PriceError::ParseError(e.to_string()))?;
         
-        // Extract the price from the nested structure
+        
         json.get("bitcoin")
             .and_then(|btc| btc.get("usd"))
             .and_then(|price| price.as_f64())
@@ -112,7 +112,7 @@ impl Pricing for Bitcoin {
     }
 }
 
-// Implementation of Pricing trait for Ethereum
+
 impl Pricing for Ethereum {
     fn fetch_price(&self) -> Result<f64, PriceError> {
         let url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd";
@@ -126,7 +126,7 @@ impl Pricing for Ethereum {
         let json: serde_json::Value = serde_json::from_str(&response_str)
             .map_err(|e| PriceError::ParseError(e.to_string()))?;
         
-        // Extract the price from the nested structure
+        
         json.get("ethereum")
             .and_then(|eth| eth.get("usd"))
             .and_then(|price| price.as_f64())
